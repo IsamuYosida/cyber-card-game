@@ -100,26 +100,18 @@ export function checkDefense(company, characteristic) {
          temporaryDefenses.some(d => d && d.characteristic === characteristic);
 }
 
-// Новая функция: снятие временных защит в конце хода компании
 export function clearTemporaryDefenses(gameState) {
   gameState.companies.forEach(company => {
     if (company.temporaryDefenses) {
-      // Снимаем все временные защиты
       const cleared = company.temporaryDefenses;
       company.temporaryDefenses = [];
-      
-      // Возвращаем снятые карты в колоду (опционально)
-      // Можно просто удалить, чтобы не накапливались
       if (cleared.length > 0) {
-        // Просто логируем, если нужно
-        // console.log(`Сняты временные защиты у ${company.name}: ${cleared.map(d => d.name).join(', ')}`);
       }
     }
   });
   return gameState;
 }
 
-// Новая функция: снятие временных защит с конкретной компании (для случая, когда компании ходят по отдельности)
 export function clearCompanyTemporaryDefenses(company) {
   if (company && company.temporaryDefenses) {
     company.temporaryDefenses = [];
@@ -127,7 +119,6 @@ export function clearCompanyTemporaryDefenses(company) {
   return company;
 }
 
-// Исправленная функция executeAttack - теперь правильно снимает защиты
 export function executeAttack(gameState, hackerId, companyId, attackCard, selectedChar = null) {
   const hacker = gameState.hackers.find(h => h.id === hackerId);
   const company = gameState.companies.find(c => c.id === companyId);
@@ -141,7 +132,6 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
   let damage = 0;
   let usedCharacteristics = [];
   
-  // Выполняем атаку в зависимости от типа карты
   if (attackCard.type === 'single') {
     const char = attackCard.characteristics[0];
     const hasDefense = checkDefense(company, char);
@@ -150,7 +140,6 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
     usedCharacteristics = [char];
     
     if (hasDefense) {
-      // Если есть защита - снимаем ВСЕ защиты с этой характеристики (и временные, и постоянные)
       company.permanentDefenses = company.permanentDefenses.filter(d => d?.characteristic !== char);
       company.temporaryDefenses = company.temporaryDefenses.filter(d => d?.characteristic !== char);
       message = `Атака провалена: ${char} защищена, защита снята`;
@@ -175,9 +164,7 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
     
     usedCharacteristics = [char1, char2];
     
-    // Проверяем защиту на первой характеристике (она имеет приоритет)
     if (hasDefense1) {
-      // Снимаем защиты с первой характеристики
       company.permanentDefenses = company.permanentDefenses.filter(d => d?.characteristic !== char1);
       company.temporaryDefenses = company.temporaryDefenses.filter(d => d?.characteristic !== char1);
       message = `Атака провалена: ${char1} защищена, защита снята`;
@@ -188,9 +175,7 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
       success = false;
       damage = 0;
     } else if (val1 === 'low' && val2 === 'low') {
-      // Если обе характеристики уязвимы - проверяем защиты на второй
       if (hasDefense2) {
-        // Снимаем защиту со второй характеристики
         company.permanentDefenses = company.permanentDefenses.filter(d => d?.characteristic !== char2);
         company.temporaryDefenses = company.temporaryDefenses.filter(d => d?.characteristic !== char2);
         message = `Атака частично успешна: ${char1} уязвима, ${char2} защищена`;
@@ -202,7 +187,6 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
         damage = 2;
       }
     } else if (val1 === 'low') {
-      // Первая характеристика уязвима, вторая - высокая
       message = `Атака частично успешна`;
       success = true;
       damage = 1;
@@ -235,7 +219,6 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
     }
   }
   
-  // Если атака неудачна - хакер теряет здоровье
   if (!success) {
     hacker.health -= 1;
     
@@ -248,17 +231,14 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
     return { success: false, message, damage: 0, gameState };
   }
   
-  // Успешная атака - наносим урон
   company.health -= damage;
   
-  // Снимаем временные защиты с атакованных характеристик (если атака была успешна)
-  usedCharacteristics.forEach(char => {
+    usedCharacteristics.forEach(char => {
     if (company.temporaryDefenses) {
       company.temporaryDefenses = company.temporaryDefenses.filter(d => d?.characteristic !== char);
     }
   });
   
-  // Убираем использованную карту и берём новую
   const cardIndex = hacker.hand.findIndex(c => c.id === attackCard.id);
   if (cardIndex !== -1) {
     hacker.hand.splice(cardIndex, 1);
@@ -268,7 +248,6 @@ export function executeAttack(gameState, hackerId, companyId, attackCard, select
     }
   }
   
-  // Проверяем, не умерла ли компания
   if (company.health <= 0) {
     company.isAlive = false;
     const index = gameState.companies.findIndex(c => c.id === companyId);
@@ -293,12 +272,10 @@ export function useDefenseCard(gameState, companyId, defenseCard) {
   const usedCard = company.hand[cardIndex];
   company.hand.splice(cardIndex, 1);
   
-  // Проверяем, не защищена ли уже эта характеристика
   const alreadyDefended = (company.permanentDefenses || []).some(d => d?.characteristic === defenseCard.characteristic) ||
                           (company.temporaryDefenses || []).some(d => d?.characteristic === defenseCard.characteristic);
   
   if (alreadyDefended) {
-    // Если уже защищена - просто сбрасываем карту
     if (gameState.defenseDeck.length > 0) {
       const newCard = gameState.defenseDeck.shift();
       company.hand.push(newCard);
@@ -314,7 +291,6 @@ export function useDefenseCard(gameState, companyId, defenseCard) {
     company.temporaryDefenses.push(usedCard);
   }
   
-  // Берём новую карту
   if (gameState.defenseDeck.length > 0) {
     const newCard = gameState.defenseDeck.shift();
     company.hand.push(newCard);

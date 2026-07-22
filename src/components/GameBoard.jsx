@@ -18,7 +18,6 @@ const characteristicNames = {
   reputation: 'Репутация'
 };
 
-// Функция для глубокого копирования состояния с восстановлением методов ботов
 const deepCopyGameState = (state) => {
   if (!state) return null;
   
@@ -128,7 +127,6 @@ export function GameBoard() {
     
     try {
       if (currentPlayer.role === 'hacker') {
-        // ХОД ХАКЕРА - атакует
         const aliveCompanies = newState.companies.filter(c => c.isAlive !== false && c.health > 0);
         
         if (aliveCompanies.length > 0 && currentPlayer.chooseTarget) {
@@ -178,7 +176,6 @@ export function GameBoard() {
         }
         
       } else if (currentPlayer.role === 'company') {
-        // ХОД КОМПАНИИ - сначала снимаем временные защиты (они уже отыграли свой ход)
         const company = newState.companies.find(c => c.id === currentPlayer.id);
         if (company && company.temporaryDefenses && company.temporaryDefenses.length > 0) {
           const clearedCount = company.temporaryDefenses.length;
@@ -187,7 +184,6 @@ export function GameBoard() {
           addLogMessage(`🏢 ${company.name}: сняты временные защиты: ${clearedNames}`);
         }
         
-        // Затем ход компании - активирует защиту
         if (currentPlayer.chooseDefenseCard) {
           const defenseCard = currentPlayer.chooseDefenseCard();
           
@@ -233,7 +229,6 @@ export function GameBoard() {
     return newState;
   }, [addLogMessage, checkGameOver]);
 
-  // Эффект для автоматического хода ботов
   useEffect(() => {
     if (!gameState || gameState.gameOver || isProcessing) return;
     
@@ -245,7 +240,6 @@ export function GameBoard() {
     }
   }, [gameState, isProcessing, executeBotTurn]);
 
-  // Очистка таймера при размонтировании
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -277,7 +271,6 @@ export function GameBoard() {
     
     const newState = deepCopyGameState(gameState);
     
-    // Если текущий игрок - компания, снимаем её временные защиты (при принудительном завершении хода)
     if (currentPlayer.role === 'company') {
       const company = newState.companies.find(c => c.id === currentPlayer.id);
       if (company && company.temporaryDefenses && company.temporaryDefenses.length > 0) {
@@ -407,7 +400,6 @@ export function GameBoard() {
       return;
     }
     
-    // Бесплатный сброс для компании на высокую характеристику
     if (roleSelection === 'company') {
       const charValue = currentPlayer.characteristics?.[card.characteristic];
       if (charValue === 'high') {
@@ -503,7 +495,6 @@ export function GameBoard() {
     );
   }
 
-  // Экран окончания игры
   if (gameState?.gameOver) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>

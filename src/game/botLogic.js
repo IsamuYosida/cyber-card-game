@@ -15,7 +15,6 @@ export function createHackerBot(id, name, difficulty = 'medium') {
       if (this.difficulty === 'easy') {
         return aliveCompanies[0];
       }
-      // Ищем компанию с наименьшим здоровьем
       return aliveCompanies.reduce((a, b) => a.health < b.health ? a : b);
     },
     
