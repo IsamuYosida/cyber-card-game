@@ -1,16 +1,36 @@
-# React + Vite
+# Киберконфликт (Cyber Conflict Game)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Карточная стратегическая игра на тему кибербезопасности, где игроки противостоят друг другу в мире киберугроз и защиты.
 
-Currently, two official plugins are available:
+## 🎮 О игре
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+«Киберконфликт» — карточная игра, которую наконец перенесли в формат веб‑приложения! Как и в оригинале, игрок выбирает одну из двух ролей: хакер или компания. В зависимости от выбранной роли вы получаете карты атаки или защиты и начинаете свою партию. Не с кем поиграть! Не проблема, остальные роль остальных игроков на поле выполняют роботы. Играйте в любом месте и без интернета! Эта игра — это не только способ хорошо провести время, но и возможность разобраться в реальных типах угроз и методах защиты от них: вы на практике увидите, с какими угрозами могут встречаться не только компании, но и обычные пользователи. 
 
-## React Compiler
+### Правила:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Цель хакеров — вывести компании из строя. У каждой компании есть 5 характеристик: 2 высокие и 3 низкие. Атакуйте, находите слабые места и доводите уровень здоровья компании до 0, чтобы победить. Для этого вам доступен разнообразный набор карт атаки: некоторые карты воздействуют на одну, а другие — на две характеристики. Если хакер попадает по высокой характеристике, с компании снимается 1-2 здоровья в зависимости от эффекта карты, если по низкой — хакер теряет 1 здоровье.
 
-## Expanding the ESLint configuration
+Цель компаний — создать достаточно надежную защиту, чтобы остановить хакеров. Вы видите свои слабые характеристики и выбираете карты из колоды, чтобы защититься от атак. Карты защиты бывают двух типов:
+* временные — действуют только на один ход;
+* постоянные — активны до первой атаки по защищённой характеристике.
+Не позволяйте хакерам снизить ваше здоровье до нуля — стройте защиту вовремя и отражайте атаки, пока противник не окажется бессилен.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Особенности:
+- 🃏 Динамичная карточная механика (очень)
+- 💻 Реалистичные сценарии кибератак (ну почти)
+- 🏢 Уникальные профили компаний (Никогда не знаешь, с какими характеристиками начнешь игру!)
+- 🤖 Интеллектуальный ИИ-противник (достаточно умный, чтобы выиграть!)
+- ⚡ Быстрые партии (10-15 минут)
+
+
+
+## 🚀 Установка и запуск
+```bash
+# Клонируйте репозиторий
+git clone https://github.com/ваш-username/cyber-conflict-game.git
+# Перейдите в директорию проекта
+cd cyber-conflict-game
+# Установите зависимости
+npm install
+# Запустите в режиме разработки
+npm run dev
