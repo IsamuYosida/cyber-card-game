@@ -18,6 +18,7 @@ const characteristicNames = {
   reputation: 'Репутация'
 };
 
+// Функция для глубокого копирования состояния с восстановлением методов ботов
 const deepCopyGameState = (state) => {
   if (!state) return null;
   
@@ -127,6 +128,7 @@ export function GameBoard() {
     
     try {
       if (currentPlayer.role === 'hacker') {
+        // ХОД ХАКЕРА - атакует
         const aliveCompanies = newState.companies.filter(c => c.isAlive !== false && c.health > 0);
         
         if (aliveCompanies.length > 0 && currentPlayer.chooseTarget) {
@@ -176,6 +178,7 @@ export function GameBoard() {
         }
         
       } else if (currentPlayer.role === 'company') {
+        // ХОД КОМПАНИИ - сначала снимаем временные защиты (они уже отыграли свой ход)
         const company = newState.companies.find(c => c.id === currentPlayer.id);
         if (company && company.temporaryDefenses && company.temporaryDefenses.length > 0) {
           const clearedCount = company.temporaryDefenses.length;
@@ -184,6 +187,7 @@ export function GameBoard() {
           addLogMessage(`🏢 ${company.name}: сняты временные защиты: ${clearedNames}`);
         }
         
+        // Затем ход компании - активирует защиту
         if (currentPlayer.chooseDefenseCard) {
           const defenseCard = currentPlayer.chooseDefenseCard();
           
@@ -229,6 +233,7 @@ export function GameBoard() {
     return newState;
   }, [addLogMessage, checkGameOver]);
 
+  // Эффект для автоматического хода ботов
   useEffect(() => {
     if (!gameState || gameState.gameOver || isProcessing) return;
     
@@ -240,6 +245,7 @@ export function GameBoard() {
     }
   }, [gameState, isProcessing, executeBotTurn]);
 
+  // Очистка таймера при размонтировании
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -271,6 +277,7 @@ export function GameBoard() {
     
     const newState = deepCopyGameState(gameState);
     
+    // Если текущий игрок - компания, снимаем её временные защиты (при принудительном завершении хода)
     if (currentPlayer.role === 'company') {
       const company = newState.companies.find(c => c.id === currentPlayer.id);
       if (company && company.temporaryDefenses && company.temporaryDefenses.length > 0) {
@@ -400,6 +407,7 @@ export function GameBoard() {
       return;
     }
     
+    // Бесплатный сброс для компании на высокую характеристику
     if (roleSelection === 'company') {
       const charValue = currentPlayer.characteristics?.[card.characteristic];
       if (charValue === 'high') {
@@ -495,6 +503,7 @@ export function GameBoard() {
     );
   }
 
+  // Экран окончания игры
   if (gameState?.gameOver) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -546,18 +555,7 @@ export function GameBoard() {
           {isProcessing && <span style={{ marginLeft: '10px', color: '#f39c12' }}>🤖 Ход бота...</span>}
           {isHumanTurn && <span style={{ marginLeft: '10px', color: '#2ed573' }}>⭐ ВАШ ХОД!</span>}
         </div>
-        {isHumanTurn && (
-          <button onClick={endTurn} style={{
-            padding: '8px 16px',
-            backgroundColor: '#f39c12',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer'
-          }}>
-            ⏭️ Завершить ход
-          </button>
-        )}
+        {/* Кнопка "Завершить ход" теперь внизу */}
       </div>
       
       {/* Сообщение */}
@@ -658,7 +656,7 @@ export function GameBoard() {
             />
           )}
           
-          {/* Панель действий */}
+          {/* Панель действий - теперь с кнопкой "Завершить ход" */}
           <div style={{
             position: 'fixed',
             bottom: '20px',
@@ -668,62 +666,99 @@ export function GameBoard() {
             borderRadius: '12px',
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             display: 'flex',
+            flexDirection: 'column',
             gap: '10px',
-            zIndex: 100
+            zIndex: 100,
+            minWidth: '250px'
           }}>
-            {roleSelection === 'hacker' && (
+            {/* Верхний ряд: основные действия */}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {roleSelection === 'hacker' && (
+                <button
+                  onClick={handleAttack}
+                  disabled={!selectedAttackCard || !selectedCompany}
+                  style={{
+                    flex: 1,
+                    padding: '10px 20px',
+                    backgroundColor: '#e74c3c',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    opacity: (!selectedAttackCard || !selectedCompany) ? 0.5 : 1,
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ⚔️ АТАКОВАТЬ
+                </button>
+              )}
+              
+              {roleSelection === 'company' && (
+                <button
+                  onClick={handleUseDefense}
+                  disabled={!selectedDefenseCard}
+                  style={{
+                    flex: 1,
+                    padding: '10px 20px',
+                    backgroundColor: '#27ae60',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    opacity: !selectedDefenseCard ? 0.5 : 1,
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  🛡️ ЗАЩИТИТЬ
+                </button>
+              )}
+              
               <button
-                onClick={handleAttack}
-                disabled={!selectedAttackCard || !selectedCompany}
+                onClick={() => {
+                  setSelectedAttackCard(null);
+                  setSelectedDefenseCard(null);
+                  setSelectedCompany(null);
+                  setMessage('Выбор очищен');
+                }}
                 style={{
                   padding: '10px 20px',
-                  backgroundColor: '#e74c3c',
+                  backgroundColor: '#95a5a6',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
                   cursor: 'pointer',
-                  opacity: (!selectedAttackCard || !selectedCompany) ? 0.5 : 1
+                  fontSize: '14px'
                 }}
               >
-                ⚔️ АТАКОВАТЬ
+                🗑️ Очистить
               </button>
-            )}
+            </div>
             
-            {roleSelection === 'company' && (
-              <button
-                onClick={handleUseDefense}
-                disabled={!selectedDefenseCard}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#27ae60',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  opacity: !selectedDefenseCard ? 0.5 : 1
-                }}
-              >
-                🛡️ АКТИВИРОВАТЬ ЗАЩИТУ
-              </button>
-            )}
-            
+            {/* Нижний ряд: кнопка завершения хода (полная ширина) */}
             <button
-              onClick={() => {
-                setSelectedAttackCard(null);
-                setSelectedDefenseCard(null);
-                setSelectedCompany(null);
-                setMessage('Выбор очищен');
-              }}
+              onClick={endTurn}
               style={{
-                padding: '10px 20px',
-                backgroundColor: '#95a5a6',
+                width: '100%',
+                padding: '12px 20px',
+                backgroundColor: '#f39c12',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#e67e22';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#f39c12';
               }}
             >
-              🗑️ Очистить
+              ⏭️ ЗАВЕРШИТЬ ХОД
             </button>
           </div>
         </>

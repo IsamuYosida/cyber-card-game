@@ -1,5 +1,5 @@
 import { characteristicKeys } from './characteristics';
-
+// ВСЕ ГОТОВО, НЕ ТРОГАТЬ
 // 20 различных профилей компаний. 
 const companyTemplates = [
   { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'high', reputation: 'high' },
