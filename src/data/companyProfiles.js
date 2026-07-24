@@ -1,25 +1,27 @@
 import { characteristicKeys } from './characteristics';
 
-// 18 различных профилей компаний
+// 20 различных профилей компаний. 
 const companyTemplates = [
   { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'high', reputation: 'high' },
   { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'low', reputation: 'high' },
-  { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'high', reputation: 'low' },
   { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'low', reputation: 'high' },
-  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'high', reputation: 'low' },
-  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'high', innovationAbility: 'low', reputation: 'low' },
   { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'low', reputation: 'high' },
+  { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'high', reputation: 'low' },
+  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'high', reputation: 'low' },
   { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'high', reputation: 'low' },
+  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'high', innovationAbility: 'low', reputation: 'low' },
   { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'low', reputation: 'low' },
   { informationSecurity: 'high', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'low', reputation: 'low' },
-  { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'low', reputation: 'high' },
-  { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'high', reputation: 'low' },
-  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'high', innovationAbility: 'low', reputation: 'low' },
-  { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'high', reputation: 'low' },
+  { informationSecurity: 'high', technologyInfrastructure: 'high', financialStability: 'high', innovationAbility: 'low', reputation: 'low' },
   { informationSecurity: 'high', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'high', reputation: 'low' },
+  { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'high', reputation: 'low' },
   { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'high', innovationAbility: 'high', reputation: 'low' },
+  { informationSecurity: 'high', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'low', reputation: 'high' },
   { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'low', reputation: 'high' },
-  { informationSecurity: 'high', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'low', reputation: 'high' }
+  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'high', innovationAbility: 'low', reputation: 'high' },
+  { informationSecurity: 'high', technologyInfrastructure: 'low', financialStability: 'low', innovationAbility: 'high', reputation: 'high' },
+  { informationSecurity: 'low', technologyInfrastructure: 'high', financialStability: 'low', innovationAbility: 'high', reputation: 'high' },
+  { informationSecurity: 'low', technologyInfrastructure: 'low', financialStability: 'high', innovationAbility: 'high', reputation: 'high' }
 ];
 
 const companyNames = [
